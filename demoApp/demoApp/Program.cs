@@ -37,7 +37,7 @@ namespace demoApp
                     default:
                         break;
                 }
-
+                
                 var sessionDetails = api.GetAsync("nsk/session/details").Result;
 
                 dynamic result = JsonConvert.DeserializeObject<dynamic>(sessionDetails.Content.ReadAsStringAsync().Result);
@@ -46,10 +46,15 @@ namespace demoApp
 
         private static void Login(HttpClient api, string userName, string password)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(new {
+            var v = JsonConvert.SerializeObject(new
+            {
                 userName,
-                password
-            }));
+                password,
+                domain = "WWW"
+            });
+            var content = new StringContent(v);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
             var result = api.PostAsync("nsk/user/login", content).Result;
         }
 
